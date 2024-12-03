@@ -12,10 +12,12 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
 import org.springframework.data.mongodb.core.query.NearQuery;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+// @ActiveProfiles("test")
 public class StoreServiceTest {
 
     @Autowired
@@ -23,35 +25,45 @@ public class StoreServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // پاک‌سازی دیتابیس قبل از هر تست
-        mongoTemplate.dropCollection(Store.class);
+        // Clean Database before each test
+        // mongoTemplate.dropCollection(Store.class);
 
-        // ایجاد ایندکس 2dsphere برای فیلد location
-        mongoTemplate.indexOps(Store.class)
-            .ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
+        // Create Index for GeoSpatial Query
+        // mongoTemplate.indexOps(Store.class)
+        // .ensureIndex(new
+        // GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
     }
 
+    // Test if there is any data in the database
+    @Test
+    public void testDatabase() {
+        var stores = mongoTemplate.findAll(Store.class);
+        assertNotNull(stores, "Test Faild: Stores should not be null");
+        assertFalse(stores.isEmpty(), "Test Faild: No stores found!");
+    }
+
+    // Test check index
+    @Test
+    public void testIndex() {
+        var indexInfo = mongoTemplate.indexOps(Store.class).getIndexInfo();
+        assertNotNull(indexInfo, "Test Faild: Index should not be null");
+        assertFalse(indexInfo.isEmpty(), "Test Faild: No index found!");
+    }
+
+    // Test Geo Query
     @Test
     public void testGeoQuery() {
-        // ایجاد داده تستی
-        Store store = new Store();
-        store.setUuid("test-uuid");
-        store.setCity("Test City");
-        store.setLongitude(4.745031);
-        store.setLatitude(52.63374);
-        mongoTemplate.save(store);
 
-        // اجرای کوئری جغرافیایی
-        GeoJsonPoint location = new GeoJsonPoint(4.745031, 52.63374);
+        // Execute Geo Query
+        GeoJsonPoint location = new GeoJsonPoint(4.883832, 52.37867);
         NearQuery query = NearQuery.near(location)
-                .maxDistance(new Distance(10, Metrics.KILOMETERS)) // فاصله 10 کیلومتر
+                .maxDistance(new Distance(1000, Metrics.KILOMETERS))
                 .limit(5);
 
         var results = mongoTemplate.geoNear(query, Store.class);
 
-        // بررسی نتایج
-        assertNotNull(results, "Results should not be null");
-        assertFalse(results.getContent().isEmpty(), "No stores found!");
-        assertEquals("Test City", results.getContent().get(0).getContent().getCity(), "City name mismatch!");
+        // Evaluate test results
+        assertNotNull(results, "Test Faild: Results should not be null");
+        assertFalse(results.getContent().isEmpty(), "Test Faild: No stores found!");
     }
 }

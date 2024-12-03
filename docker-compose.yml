@@ -5,6 +5,19 @@ services:
     ports:
       - "27017:27017"
     volumes:
-            - mongodb_data:/data/db
+      - mongodb_data:/data/db
+
+  geo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: geo-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/jumbo
+
 volumes:
   mongodb_data:

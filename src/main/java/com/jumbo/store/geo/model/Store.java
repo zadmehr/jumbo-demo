@@ -76,4 +76,16 @@ public class Store {
     private void setLocation() {
         this.location = new GeoJsonPoint(this.longitude, this.latitude);
     }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
 }

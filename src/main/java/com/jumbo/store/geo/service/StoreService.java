@@ -6,9 +6,13 @@ import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.model.StoreList;
 import com.jumbo.store.geo.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeospatialIndex;
+import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,7 +33,7 @@ public class StoreService {
     @PostConstruct
     public void init() {
         // delete all data and load from json
-        mongoTemplate.dropCollection(Store.class);
+        // mongoTemplate.dropCollection(Store.class);
         if (storeRepository.count() == 0) {
             loadDataFromJson();
         } else {
@@ -91,5 +95,23 @@ public class StoreService {
         } else {
             System.out.println("Index creation failed!");
         }
+    }
+
+
+    public List<Store> getNearestStores(double latitude, double longitude) {
+        GeoJsonPoint location = new GeoJsonPoint(longitude, latitude);
+        System.out.println("Searching nearest stores for location: " + location);
+
+        NearQuery query = NearQuery.near(location)
+                .maxDistance(new Distance(100, Metrics.KILOMETERS)) // 100 کیلومتر
+                .limit(5);
+
+        var results = mongoTemplate.geoNear(query, Store.class);
+        System.out.println("Found results: " + results.getContent().size());
+
+        return results.getContent()
+                .stream()
+                .map(geoResult -> geoResult.getContent())
+                .toList();
     }
 }
