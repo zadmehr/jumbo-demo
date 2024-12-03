@@ -21,6 +21,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for managing store-related operations.
+ */
 @Service
 public class StoreService {
 
@@ -30,10 +33,12 @@ public class StoreService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * Initializes the service by loading data from JSON if the store repository is empty
+     * and creating the necessary geospatial index.
+     */
     @PostConstruct
     public void init() {
-        // delete all data and load from json
-        // mongoTemplate.dropCollection(Store.class);
         if (storeRepository.count() == 0) {
             loadDataFromJson();
         } else {
@@ -42,6 +47,9 @@ public class StoreService {
         createIndex();
     }
 
+    /**
+     * Loads store data from a JSON file and saves valid stores to the repository.
+     */
     private void loadDataFromJson() {
         ObjectMapper mapper = new ObjectMapper();
         InputStream inputStream = getClass().getResourceAsStream("/stores.json");
@@ -52,7 +60,7 @@ public class StoreService {
         }
 
         try {
-            // خواندن فایل JSON و تطابق با StoreList
+            // Read JSON file and map it to StoreList object
             TypeReference<StoreList> typeReference = new TypeReference<>() {
             };
             StoreList storeList = mapper.readValue(inputStream, typeReference);
@@ -74,7 +82,7 @@ public class StoreService {
                 }
             }
 
-            // ذخیره داده‌های معتبر
+            // Save valid data
             storeRepository.saveAll(validStores);
             System.out.println("Stores saved successfully!");
 
@@ -83,6 +91,9 @@ public class StoreService {
         }
     }
 
+    /**
+     * Creates a geospatial index on the location field of the Store collection.
+     */
     private void createIndex() {
         mongoTemplate.indexOps(Store.class)
                 .ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
@@ -97,13 +108,19 @@ public class StoreService {
         }
     }
 
-
+    /**
+     * Retrieves the nearest stores to the given latitude and longitude.
+     *
+     * @param latitude  the latitude of the location
+     * @param longitude the longitude of the location
+     * @return a list of the nearest stores
+     */
     public List<Store> getNearestStores(double latitude, double longitude) {
         GeoJsonPoint location = new GeoJsonPoint(longitude, latitude);
         System.out.println("Searching nearest stores for location: " + location);
 
         NearQuery query = NearQuery.near(location)
-                .maxDistance(new Distance(100, Metrics.KILOMETERS)) // 100 کیلومتر
+                .maxDistance(new Distance(100, Metrics.KILOMETERS)) // 100 kilometers
                 .limit(5);
 
         var results = mongoTemplate.geoNear(query, Store.class);
