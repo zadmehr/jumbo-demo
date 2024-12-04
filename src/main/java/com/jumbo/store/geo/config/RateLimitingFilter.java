@@ -72,7 +72,7 @@ public class RateLimitingFilter implements Filter {
     }
 
     private Bucket createNewBucket(String key) {
-        Bandwidth limit = Bandwidth.classic(5, Refill.greedy(5, Duration.ofSeconds(1))); 
+        Bandwidth limit = Bandwidth.classic(100, Refill.greedy(100, Duration.ofSeconds(1))); 
         return Bucket.builder()
                 .addLimit(limit)
                 .build();

@@ -21,8 +21,8 @@ import java.util.List;
 @Tag(name = "Store API", description = "API for managing stores and their locations")
 public class StoreController {
 
+ 
     private final StoreService storeService;
-
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
     }

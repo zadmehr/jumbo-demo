@@ -2,26 +2,25 @@ services:
   mongodb:
     image: mongo:latest
     container_name: mongodb
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
       - ./mongo-init-scripts:/docker-entrypoint-initdb.d
     environment:
       MONGO_INITDB_ROOT_USERNAME: jumbo
       MONGO_INITDB_ROOT_PASSWORD: jumbo
-
+    ports:
+      - "27017:27017"
   geo-app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: geo-app
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
       - mongodb
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://jumbo:jumbo_secure_password@mongodb:27017/jumbo
-
+      SPRING_DATA_MONGODB_URI: mongodb://jumbo:jumbo@mongodb:27017/jumbo
 volumes:
   mongo_data:

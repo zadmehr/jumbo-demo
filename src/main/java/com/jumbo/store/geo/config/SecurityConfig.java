@@ -8,23 +8,23 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
 
 @Configuration
-@EnableMethodSecurity // فعال‌سازی کنترل سطح متدها
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // غیرفعال کردن CSRF
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/v1/*",
-                    "/swagger-ui.html",      // مسیر Swagger UI
-                    "/v1/api-docs/**",       // مسیر مستندات API
+                    "/api/v1/**",
+                    "/swagger-ui.html", 
+                    "/v1/api-docs/**", 
                     "/swagger-ui/**" 
-                    ).permitAll() // مسیر عمومی
-                .anyRequest().authenticated() // سایر مسیرها نیاز به احراز هویت دارند
+                    ).permitAll() 
+                .anyRequest().authenticated() 
             )
-            .httpBasic(Customizer.withDefaults()); // فعال‌سازی Basic Authentication
+            .httpBasic(Customizer.withDefaults()); 
         return http.build();
     }
 }
