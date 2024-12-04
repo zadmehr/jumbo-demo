@@ -16,7 +16,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // غیرفعال کردن CSRF
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/*").permitAll() // مسیر عمومی
+                .requestMatchers(
+                    "/api/v1/*",
+                    "/swagger-ui.html",      // مسیر Swagger UI
+                    "/v3/api-docs/**",       // مسیر مستندات API
+                    "/swagger-ui/**" 
+                    ).permitAll() // مسیر عمومی
                 .anyRequest().authenticated() // سایر مسیرها نیاز به احراز هویت دارند
             )
             .httpBasic(Customizer.withDefaults()); // فعال‌سازی Basic Authentication
