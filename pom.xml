@@ -9,11 +9,11 @@
 		<version>3.4.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.jumbo.store.geo</groupId>
+	<artifactId>geo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Demo project Jumbo Geo Store Locations</description>
 	<url />
 	<licenses>
 		<license />
