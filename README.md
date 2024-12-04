@@ -43,13 +43,19 @@ Ensure you have the following installed:
     docker compose up -d
     ```
 
-3. **Access Swagger Documentation**:
+3. **Check Application Status**:
+    Visit the following link in your browser:
+    ```
+    http://localhost:8080/actuator/health
+    ```
+
+4. **Access Swagger Documentation**:
     Visit the following link in your browser:
     ```
     http://localhost:8080/swagger-ui/index.html
     ```
 
-4. **Test the API**:
+5. **Test the API**:
     Fetch the nearest stores:
     ```
     http://localhost:8080/api/v1/nearest-stores?latitude=52.37867&longitude=4.883832
@@ -82,7 +88,7 @@ src/main/java
 | Logging             | SLF4J                  |
 | API Documentation   | Springdoc + Swagger UI |
 | Security            | Spring Security        |
-| Rate Limiting       | Resilience4j           |
+| Rate Limiting       | bucket4j           |
 | Metrics and Health  | Spring Boot Actuator   |
 | Docker Management   | Docker Compose         |
 
@@ -119,14 +125,9 @@ src/main/java
 - **CI/CD Pipeline**:
   - Automate build, test, and deployment workflows.
 
-- **Git Repository**:
-  - Create a dedicated Git repository with clean commit history.
-
 - **Secrets Management**:
   - Use Vault to manage sensitive MongoDB credentials.
 
-- **Documentation**:
-  - Expand documentation for API consumers and developers.
 
 ---
 
