@@ -1,10 +1,8 @@
 package com.jumbo.store.geo.service;
 
+import com.jumbo.store.geo.model.Store;
 import java.util.List;
 
-import com.jumbo.store.geo.model.Store;
-
-public interface StoreService {
-
-    public List<Store> getNearestStores(double latitude, double longitude);
+public interface StoreService  {
+    List<Store> getNearestStores(String latitude, String longitude);
 }
