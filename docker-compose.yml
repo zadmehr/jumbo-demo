@@ -5,7 +5,11 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongo_data:/data/db
+      - ./mongo-init-scripts:/docker-entrypoint-initdb.d
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: jumbo
+      MONGO_INITDB_ROOT_PASSWORD: jumbo
 
   geo-app:
     build:
@@ -17,7 +21,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/jumbo
+      SPRING_DATA_MONGODB_URI: mongodb://jumbo:jumbo_secure_password@mongodb:27017/jumbo
 
 volumes:
-  mongodb_data:
+  mongo_data:

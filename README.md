@@ -20,8 +20,6 @@
     // Importer => Shel Script
     // Unit Test
     // Integration
-    // APi
-    // Log => SLFForj
 
     // REST Status.200
     // Rest 400, 500
@@ -33,11 +31,10 @@
 
     // Vault for MongoDb
 
-
+    // Log => SLFForj
     // RateLimitter
     // Swagger
     // Actuator + Spring Security
     // Java 21 Done
     // Interface
     // DTO
-   

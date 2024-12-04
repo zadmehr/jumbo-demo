@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +26,6 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @Autowired
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
     }
@@ -60,13 +58,4 @@ public class StoreController {
                 .toList();
     }
 
-    /**
-     * A secure API endpoint example.
-     * 
-     * @return a message indicating the endpoint is secure
-     */
-    @GetMapping("/secure-api")
-    public String secureApi() {
-        return "This is a secure API endpoint";
-    }
 }
