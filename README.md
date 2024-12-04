@@ -116,49 +116,11 @@ src/main/java
 
 ## Pending Features
 
-- **Unit Tests**:
-  - Add comprehensive unit test coverage for controllers and services.
-
 - **Integration Tests**:
   - Validate integration between components.
 
-- **CI/CD Pipeline**:
-  - Automate build, test, and deployment workflows.
-
 - **Secrets Management**:
   - Use Vault to manage sensitive MongoDB credentials.
-
-
----
-
-## Contribution Guidelines
-
-1. Fork the repository and clone it to your local machine.
-2. Create a new branch for your feature or fix:
-    ```sh
-    git checkout -b feature-name
-    ```
-3. Make your changes and commit them with clear messages.
-4. Push your changes to your forked repository:
-    ```sh
-    git push origin feature-name
-    ```
-5. Create a pull request to the main repository.
-
----
-
-## Next Steps
-
-1. **Testing**:
-   - Write unit and integration tests.
-   - Validate geospatial queries.
-
-2. **Automation**:
-   - Implement CI/CD pipeline using GitHub Actions or Jenkins.
-
-3. **Production Readiness**:
-   - Configure Vault for secure credential storage.
-   - Optimize Docker image for smaller size.
 
 ---
 
