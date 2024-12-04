@@ -16,8 +16,7 @@
     Open your browser and go to [http://localhost:8080/api/v1/nearest-stores?latitude=52.37867&longitude=4.883832](http://localhost:8080/api/v1/nearest-stores?latitude=52.37867&longitude=4.883832)
 
 
-    // DTO
-   
+
     // Importer => Shel Script
     // Unit Test
     // Integration
@@ -28,9 +27,14 @@
     // Rest 400, 500
     // Swagger
     // CICD
-    // Actuator + Spring Security
+
     // New Git Repo
     // Documents
 
+    // Vault for MongoDb
+
+    // Actuator + Spring Security
     // Java 21 Done
     // Interface
+    // DTO
+   

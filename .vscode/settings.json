@@ -3,13 +3,15 @@
     "java.configuration.runtimes": [
         {
             "name": "JavaSE-21",
-            "path": "/path/to/java-21",
+            "path": "/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home",
             "default": true
         }
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "/path/to/lombok.jar"
+        ".m2/repository/org/projectlombok/lombok/1.18.28/lombok-1.18.28.jar"
     ],
-    "java.errors.incompleteClasspath.severity": "ignore"
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "java.compile.args": ["-parameters", "-Amapstruct.defaultComponentModel=spring"],
+    "java.settings.annotationProcessing.enabled": true
 }

@@ -5,12 +5,14 @@ import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.service.StoreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
@@ -44,5 +46,10 @@ public class StoreController {
         return storeService.getNearestStores(lat, lon).stream()
                 .map(StoreDTO::fromStore)
                 .toList();
+    }
+
+    @GetMapping("/secure-api")
+    public String secureApi() {
+        return "This is a secure API endpoint";
     }
 }

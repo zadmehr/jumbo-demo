@@ -2,6 +2,9 @@ package com.jumbo.store.geo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -38,6 +41,8 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
  * - getUuid(): Returns the unique identifier of the store.
  */
 @Data
+@Getter
+@Setter
 @Document(collection = "stores")
 public class Store {
 
