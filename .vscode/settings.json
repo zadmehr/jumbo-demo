@@ -1,4 +1,15 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-21",
+            "path": "/path/to/java-21",
+            "default": true
+        }
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/path/to/lombok.jar"
+    ],
+    "java.errors.incompleteClasspath.severity": "ignore"
 }

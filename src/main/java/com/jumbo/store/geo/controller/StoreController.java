@@ -1,5 +1,6 @@
 package com.jumbo.store.geo.controller;
 
+import com.jumbo.store.geo.controller.dto.StoreDTO;
 import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.service.StoreService;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
+
     @Autowired
     public StoreController(StoreService storeService) {
         this.storeService = storeService;
@@ -33,14 +35,14 @@ public class StoreController {
      * @return a list of the 5 closest stores
      */
     @GetMapping("/nearest-stores")
-    public List<Store> getNearestStores(
-            @RequestParam @NotNull(message = "Latitude is required") 
-            @Pattern(regexp = "^-?\\d+(\\.\\d+)?$", message = "Latitude must be a valid decimal number") String latitude,
-            
-            @RequestParam @NotNull(message = "Longitude is required") 
-            @Pattern(regexp = "^-?\\d+(\\.\\d+)?$", message = "Longitude must be a valid decimal number") String longitude) {
+    public List<StoreDTO> getNearestStores(
+            @RequestParam @NotNull(message = "Latitude is required") @Pattern(regexp = "^-?\\d+(\\.\\d+)?$", message = "Latitude must be a valid decimal number") String latitude,
+
+            @RequestParam @NotNull(message = "Longitude is required") @Pattern(regexp = "^-?\\d+(\\.\\d+)?$", message = "Longitude must be a valid decimal number") String longitude) {
         double lat = Double.parseDouble(latitude);
         double lon = Double.parseDouble(longitude);
-        return storeService.getNearestStores(lat, lon);
+        return storeService.getNearestStores(lat, lon).stream()
+                .map(StoreDTO::fromStore)
+                .toList();
     }
 }

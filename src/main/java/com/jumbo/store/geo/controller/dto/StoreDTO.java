@@ -1,5 +1,10 @@
 package com.jumbo.store.geo.controller.dto;
 
-public class StoreDTO {
-// MapStruct is a code generator that greatly simplifies the implementation of mappings between Java bean types based on a convention over configuration approach.
+import com.jumbo.store.geo.model.Store;
+
+public record StoreDTO(String name, double latitude, double longitude) {
+
+    public static StoreDTO fromStore(Store store) {
+        return new StoreDTO(store.getCity(), store.getLatitude(), store.getLongitude());
+    }
 }
