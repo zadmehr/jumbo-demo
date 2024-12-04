@@ -1,0 +1,28 @@
+# name: CD Pipeline
+
+# on:
+#   push:
+#     tags:
+#       - 'v*'
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     # Checkout the repository
+#     - name: Checkout Code
+#       uses: actions/checkout@v3
+
+#     # Log in to Docker Hub
+#     - name: Log in to Docker Hub
+#       uses: docker/login-action@v2
+#       with:
+#         username: ${{ secrets.DOCKER_USERNAME }}
+#         password: ${{ secrets.DOCKER_PASSWORD }}
+
+#     # Build and push Docker image
+#     - name: Build and Push Docker Image
+#       run: |
+#         docker build -t ${{ secrets.DOCKER_USERNAME }}/geo-app:latest .
+#         docker push ${{ secrets.DOCKER_USERNAME }}/geo-app:latest
