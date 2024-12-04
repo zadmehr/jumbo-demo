@@ -22,7 +22,7 @@
     // Integration
     // APi
     // Log => SLFForj
-    // RateLimitter
+
     // REST Status.200
     // Rest 400, 500
 
@@ -33,6 +33,8 @@
 
     // Vault for MongoDb
 
+
+    // RateLimitter
     // Swagger
     // Actuator + Spring Security
     // Java 21 Done
