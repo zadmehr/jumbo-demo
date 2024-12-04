@@ -43,6 +43,7 @@ public class StoreController {
      * @return a list of the 5 closest stores
      */
     @GetMapping("/nearest-stores")
+
     @Operation(summary = "Get nearest stores", description = "Returns the 5 closest stores to the given latitude and longitude", responses = {
             @ApiResponse(responseCode = "200", description = "List of nearest stores"),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters")

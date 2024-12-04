@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/v1/*",
                     "/swagger-ui.html",      // مسیر Swagger UI
-                    "/v3/api-docs/**",       // مسیر مستندات API
+                    "/v1/api-docs/**",       // مسیر مستندات API
                     "/swagger-ui/**" 
                     ).permitAll() // مسیر عمومی
                 .anyRequest().authenticated() // سایر مسیرها نیاز به احراز هویت دارند

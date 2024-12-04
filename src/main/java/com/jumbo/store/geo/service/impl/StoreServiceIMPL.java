@@ -119,15 +119,12 @@ public class StoreServiceIMPL implements StoreService {
      */
     public List<Store> getNearestStores(double latitude, double longitude) {
         GeoJsonPoint location = new GeoJsonPoint(longitude, latitude);
-        System.out.println("Searching nearest stores for location: " + location);
 
         NearQuery query = NearQuery.near(location)
                 .maxDistance(new Distance(100, Metrics.KILOMETERS)) // 100 kilometers
                 .limit(5);
 
         var results = mongoTemplate.geoNear(query, Store.class);
-        System.out.println("Found results: " + results.getContent().size());
-
         return results.getContent()
                 .stream()
                 .map(geoResult -> geoResult.getContent())
