@@ -33,18 +33,5 @@ public class Store {
     @GeoSpatialIndexed(name = "location", type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-        setLocation();
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-        setLocation();
-    }
-
-    private void setLocation() {
-        this.location = new GeoJsonPoint(this.longitude, this.latitude);
-    }
 
 }
