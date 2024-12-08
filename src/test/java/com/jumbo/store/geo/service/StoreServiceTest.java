@@ -11,8 +11,6 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,11 +20,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StoreServiceTest {
-
-    @TestConfiguration
-    @Import(StoreServiceImpl.class)
-    public static class Configuration {
-    }
 
     @Mock
     private StoreRepository storeRepository;
