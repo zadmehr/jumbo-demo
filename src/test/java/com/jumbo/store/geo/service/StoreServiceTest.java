@@ -3,8 +3,6 @@ package com.jumbo.store.geo.service;
 import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.repository.StoreRepository;
 import com.jumbo.store.geo.service.impl.StoreServiceImpl;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -13,7 +11,6 @@ import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -28,7 +25,8 @@ class StoreServiceTest {
 
     @TestConfiguration
     @Import(StoreServiceImpl.class)
-    public static class Configuration {}
+    public static class Configuration {
+    }
 
     @Mock
     private StoreRepository storeRepository;
@@ -53,13 +51,14 @@ class StoreServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size()); // Expecting 2 stores as mocked
-        verify(storeRepository, times(1)).findByLocationNear(any(Point.class), any(Distance.class), any(PageRequest.class));
+        verify(storeRepository, times(1)).findByLocationNear(any(Point.class), any(Distance.class),
+                any(PageRequest.class));
     }
 
     @Test
     void testGetNearestStores_invalidLatitude() {
         // Arrange
-        String latitude = "100.0";  // Invalid latitude
+        String latitude = "100.0"; // Invalid latitude
         String longitude = "4.9009";
 
         // Act & Assert
@@ -74,7 +73,7 @@ class StoreServiceTest {
     void testGetNearestStores_invalidLongitude() {
         // Arrange
         String latitude = "52.3784";
-        String longitude = "200.0";  // Invalid longitude
+        String longitude = "200.0"; // Invalid longitude
 
         // Act & Assert
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
@@ -99,6 +98,6 @@ class StoreServiceTest {
 
         // Assert
         assertNotNull(result);
-        assertTrue(result.isEmpty());  // Expecting empty list as mocked
+        assertTrue(result.isEmpty()); // Expecting empty list as mocked
     }
 }

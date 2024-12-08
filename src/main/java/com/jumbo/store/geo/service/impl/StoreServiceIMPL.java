@@ -1,7 +1,4 @@
 package com.jumbo.store.geo.service.impl;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.repository.StoreRepository;
