@@ -1,114 +1,110 @@
-// package com.jumbo.store.geo.controller;
+package com.jumbo.store.geo.controller;
 
-// import com.jumbo.store.geo.controller.dto.NearestStoreRequest;
-// import com.jumbo.store.geo.controller.dto.StoreDTO;
-// import com.jumbo.store.geo.service.StoreService;
-// import com.jumbo.store.geo.model.Store;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.*;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-// import org.springframework.http.MediaType;
-// import org.springframework.test.web.servlet.MockMvc;
-// import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import com.jumbo.store.geo.model.Store;
+import com.jumbo.store.geo.repository.StoreRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-// import java.util.Arrays;
-// import java.util.List;
+import java.util.List;
 
-// import static org.mockito.Mockito.*;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-// @WebMvcTest(StoreController.class)
-// class StoreControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test") // Uses the "test" profile for the test configuration
+class StoreControllerTest {
 
-//     @Mock
-//     private StoreService storeService;
+    @Autowired
+    private MockMvc mockMvc;
 
-//     @Autowired
-//     private MockMvc mockMvc;
+    @Autowired
+    private StoreRepository storeRepository;
 
-//     @BeforeEach
-//     void setUp() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @BeforeEach
+    void setUp() {
+        // Clear the database before each test
+        storeRepository.deleteAll();
 
-//     @Test
-//     void testGetNearestStores_validRequest() throws Exception {
-//         // Arrange
-//         String latitude = "52.3784";
-//         String longitude = "4.9009";
-//         NearestStoreRequest request = new NearestStoreRequest(latitude, longitude);
-//         Store mockStore = new Store(); // Add properties as needed
-//         List<Store> mockStores = Arrays.asList(mockStore, mockStore); // Mock stores
-//         when(storeService.getNearestStores(latitude, longitude)).thenReturn(mockStores);
+        // Insert test data
+        Store store1 = Store.builder()
+                .city("Amsterdam")
+                .postalCode("1012AB")
+                .street("Damstraat")
+                .addressName("Store A")
+                .longitude(4.8952)
+                .latitude(52.3702)
+                .todayOpen("08:00")
+                .todayClose("22:00")
+                .collectionPoint(true)
+                .complexNumber("123")
+                .build();
 
-//         // Act & Assert
-//         mockMvc.perform(MockMvcRequestBuilders
-//                 .get("/api/v1/nearest-stores")
-//                 .param("latitude", latitude)
-//                 .param("longitude", longitude)
-//                 .contentType(MediaType.APPLICATION_JSON))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.length()").value(2)) // Expecting 2 stores as mocked
-//                 .andExpect(jsonPath("$[0].uuid").exists()); // Example of checking a property, adjust as needed
+        Store store2 = Store.builder()
+                .city("Rotterdam")
+                .postalCode("3012AB")
+                .street("Coolsingel")
+                .addressName("Store B")
+                .longitude(4.47917)
+                .latitude(51.9225)
+                .todayOpen("08:00")
+                .todayClose("22:00")
+                .collectionPoint(true)
+                .complexNumber("456")
+                .build();
 
-//         verify(storeService, times(1)).getNearestStores(latitude, longitude);
-//     }
+        storeRepository.saveAll(List.of(store1, store2));
+    }
 
-//     @Test
-//     void testGetNearestStores_invalidLatitude() throws Exception {
-//         // Arrange
-//         String invalidLatitude = "100.0";  // Invalid latitude
-//         String longitude = "4.9009";
-        
-//         // Act & Assert
-//         mockMvc.perform(MockMvcRequestBuilders
-//                 .get("/api/v1/nearest-stores")
-//                 .param("latitude", invalidLatitude)
-//                 .param("longitude", longitude)
-//                 .contentType(MediaType.APPLICATION_JSON))
-//                 .andExpect(status().isBadRequest())
-//                 .andExpect(jsonPath("$.message").value("Invalid latitude value: 100.0"));
-        
-//         verify(storeService, times(0)).getNearestStores(anyString(), anyString());
-//     }
+    @Test
+    void getNearestStores_ValidRequest_ReturnsStores() throws Exception {
+        mockMvc.perform(get("/api/v1/nearest-stores")
+                .param("latitude", "52.3702")
+                .param("longitude", "4.8952")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].addressName", is("Store A")))
+                .andExpect(jsonPath("$[0].city", is("Amsterdam")))
+                .andExpect(jsonPath("$[1].addressName", is("Store B")))
+                .andExpect(jsonPath("$[1].city", is("Rotterdam")));
+    }
 
-//     @Test
-//     void testGetNearestStores_invalidLongitude() throws Exception {
-//         // Arrange
-//         String latitude = "52.3784";
-//         String invalidLongitude = "200.0";  // Invalid longitude
-        
-//         // Act & Assert
-//         mockMvc.perform(MockMvcRequestBuilders
-//                 .get("/api/v1/nearest-stores")
-//                 .param("latitude", latitude)
-//                 .param("longitude", invalidLongitude)
-//                 .contentType(MediaType.APPLICATION_JSON))
-//                 .andExpect(status().isBadRequest())
-//                 .andExpect(jsonPath("$.message").value("Invalid longitude value: 200.0"));
+    @Test
+    void getNearestStores_InvalidLatitude_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/v1/nearest-stores")
+                .param("latitude", "200.0")
+                .param("longitude", "4.8952")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
-//         verify(storeService, times(0)).getNearestStores(anyString(), anyString());
-//     }
+    @Test
+    void getNearestStores_InvalidLongitude_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/v1/nearest-stores")
+                .param("latitude", "52.3702")
+                .param("longitude", "200.0")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
-//     @Test
-//     void testGetNearestStores_emptyResult() throws Exception {
-//         // Arrange
-//         String latitude = "52.3784";
-//         String longitude = "4.9009";
-//         List<Store> emptyStoreList = Arrays.asList(); // No stores
-//         when(storeService.getNearestStores(latitude, longitude)).thenReturn(emptyStoreList);
+    @Test
+    void getNearestStores_NoStores_ReturnsEmptyList() throws Exception {
+        // Clear all stores
+        storeRepository.deleteAll();
 
-//         // Act & Assert
-//         mockMvc.perform(MockMvcRequestBuilders
-//                 .get("/api/v1/nearest-stores")
-//                 .param("latitude", latitude)
-//                 .param("longitude", longitude)
-//                 .contentType(MediaType.APPLICATION_JSON))
-//                 .andExpect(status().isOk())
-//                 .andExpect(jsonPath("$.length()").value(0)); // Expecting empty list
-
-//         verify(storeService, times(1)).getNearestStores(latitude, longitude);
-//     }
-// }
+        mockMvc.perform(get("/api/v1/nearest-stores")
+                .param("latitude", "52.3702")
+                .param("longitude", "4.8952")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+}

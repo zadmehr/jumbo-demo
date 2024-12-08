@@ -70,6 +70,12 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>3.5.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Springdoc OpenAPI Starter -->
 		<dependency>

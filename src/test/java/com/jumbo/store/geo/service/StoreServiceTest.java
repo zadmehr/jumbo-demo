@@ -32,7 +32,15 @@ class StoreServiceTest {
         // Arrange
         String latitude = "52.3784";
         String longitude = "4.9009";
-        List<Store> mockStores = Arrays.asList(new Store(), new Store()); // Mock stores
+        List<Store> mockStores = Arrays.asList(
+                Store.builder().city("Amsterdam").postalCode("1012AB").street("Damstraat").addressName("Store A")
+                        .longitude(4.8952).latitude(52.3702).todayOpen("08:00").todayClose("22:00")
+                        .collectionPoint(true)
+                        .complexNumber("123").build(),
+                Store.builder().city("Rotterdam").postalCode("3012AB").street("Coolsingel").addressName("Store B")
+                        .longitude(4.47917).latitude(51.9225).todayOpen("08:00").todayClose("22:00")
+                        .collectionPoint(true)
+                        .complexNumber("456").build());
 
         // Mock the repository call
         when(storeRepository.findByLocationNear(any(Point.class), any(Distance.class), any(Pageable.class)))
