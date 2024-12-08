@@ -23,19 +23,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(StoreController.class)
 class StoreControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    // @Autowired
+    // private MockMvc mockMvc;
 
-    @Mock
-    private StoreService storeService;
+    // @Mock
+    // private StoreService storeService;
 
-    @InjectMocks
-    private StoreController storeController;
+    // @InjectMocks
+    // private StoreController storeController;
 
-    @BeforeEach
-    void setUp() {
-        // Initialize Mockito annotations for mocks
-        MockitoAnnotations.openMocks(this);
-    }
+    // @BeforeEach
+    // void setUp() {
+    //     // Initialize Mockito annotations for mocks
+    //     MockitoAnnotations.openMocks(this);
+    // }
 
 }

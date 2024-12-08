@@ -1,81 +1,108 @@
 package com.jumbo.store.geo.service;
 
 import com.jumbo.store.geo.model.Store;
+import com.jumbo.store.geo.repository.StoreRepository;
+import com.jumbo.store.geo.service.impl.StoreServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
-import org.springframework.data.mongodb.core.index.GeospatialIndex;
-import org.springframework.data.mongodb.core.query.NearQuery;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.data.geo.Point;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ActiveProfiles("test")
-public class StoreServiceTest {
+@ExtendWith(SpringExtension.class)
+class StoreServiceTest {
+
+    @TestConfiguration
+    @Import(StoreServiceImpl.class)
+    public static class Configuration{}
+
+    @MockitoBean
+    private StoreRepository storeRepository;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private StoreService storeService;
 
-    @BeforeEach
-    void setUp() {
-        mongoTemplate.dropCollection(Store.class);
 
-        // Add sample data for testing
-        Store store1 = new Store();
-        store1.setUuid("test-store-1");
-        store1.setCity("Amsterdam");
-        store1.setLongitude(4.883832);
-        store1.setLatitude(52.37867);
+    @Test
+    void testGetNearestStores_validCoordinates() {
+        // Arrange
+        String latitude = "52.3784";
+        String longitude = "4.9009";
+        List<Store> mockStores = Arrays.asList(new Store(), new Store()); // Mock stores
 
-        Store store2 = new Store();
-        store2.setUuid("test-store-2");
-        store2.setCity("Haarlem");
-        store2.setLongitude(4.64622);
-        store2.setLatitude(52.38739);
+        // Mock the repository call
+        when(storeRepository.findByLocationNear(any(Point.class), any(Distance.class), any(Pageable.class)))
+                .thenReturn(mockStores);
 
-        mongoTemplate.save(store1);
-        mongoTemplate.save(store2);
+        // Act
+        List<Store> result = storeService.getNearestStores(latitude, longitude);
 
-        // Create 2dsphere index
-        mongoTemplate.indexOps(Store.class)
-                .ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
-
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size()); // Expecting 2 stores as mocked
+        verify(storeRepository, times(1)).findByLocationNear(any(Point.class), any(Distance.class),
+                any(PageRequest.class));
     }
 
     // @Test
-    // void testDatabase() {
-    //     List<Store> stores = mongoTemplate.findAll(Store.class);
-    //     assertNotNull(stores, "Stores should not be null");
-    //     assertEquals(2, stores.size(), "Expected exactly 2 stores");
+    // void testGetNearestStores_invalidLatitude() {
+    //     // Arrange
+    //     String latitude = "100.0"; // Invalid latitude
+    //     String longitude = "4.9009";
+
+    //     // Act and Assert
+    //     IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+    //         storeService.getNearestStores(latitude, longitude);
+    //     });
+
+    //     assertEquals("Latitude must be between -90 and 90 degrees.", thrown.getMessage());
     // }
 
     // @Test
-    // void testGeoQuery() {
-    //     GeoJsonPoint location = new GeoJsonPoint(4.883832, 52.37867); // Amsterdam
-    //     NearQuery query = NearQuery.near(location)
-    //             .maxDistance(new Distance(50, Metrics.KILOMETERS))
-    //             .limit(5);
+    // void testGetNearestStores_invalidLongitude() {
+    //     // Arrange
+    //     String latitude = "52.3784";
+    //     String longitude = "200.0"; // Invalid longitude
 
-    //     var results = mongoTemplate.geoNear(query, Store.class);
+    //     // Act and Assert
+    //     IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+    //         storeService.getNearestStores(latitude, longitude);
+    //     });
 
-    //     assertNotNull(results, "Results should not be null");
-    //     assertEquals(2, results.getContent().size(), "Expected 2 nearby stores");
-    //     assertEquals("Amsterdam", results.getContent().get(0).getContent().getCity(), "First store should be Amsterdam");
+    //     assertEquals("Longitude must be between -180 and 180 degrees.", thrown.getMessage());
     // }
 
     // @Test
-    // void testGeoIndex() {
-    //     var indexInfo = mongoTemplate.indexOps(Store.class).getIndexInfo();
-    //     assertTrue(indexInfo.stream().anyMatch(index -> index.getName().equals("location_2dsphere")),
-    //             "2dsphere index should exist");
+    // void testGetNearestStores_emptyResult() {
+    //     // Arrange
+    //     String latitude = "52.3784";
+    //     String longitude = "4.9009";
+    //     List<Store> mockStores = Arrays.asList(); // Empty list for no stores
+
+    //     when(storeRepository.findByLocationNear(any(Point.class), any(Distance.class), any(Pageable.class)))
+    //             .thenReturn(mockStores);
+
+    //     // Act
+    //     List<Store> result = storeService.getNearestStores(latitude, longitude);
+
+    //     // Assert
+    //     assertNotNull(result);
+    //     assertTrue(result.isEmpty()); // Expecting empty list as mocked
     // }
 }

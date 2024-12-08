@@ -7,6 +7,9 @@ import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.repository.StoreRepository;
 import com.jumbo.store.geo.service.StoreService;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
@@ -18,9 +21,11 @@ import java.util.List;
  * Implementation of StoreService for managing store-related operations.
  */
 @Service
+@Slf4j
 public class StoreServiceImpl implements StoreService {
-    private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
-    private static final double MAX_DISTANCE_KM = 100.0;
+    
+    @Value("${store.max-distance-km}")
+    private double maxDistance;
     private final StoreRepository storeRepository;
 
     public StoreServiceImpl(StoreRepository storeRepository) {
@@ -29,17 +34,17 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<Store> getNearestStores(String latitude, String longitude) {
-        logger.info("Fetching nearest stores for latitude: {}, longitude: {}", latitude, longitude);
+        log.info("Fetching nearest stores for latitude: {}, longitude: {}", latitude, longitude);
 
         // Validate and parse latitude and longitude
         double lat = parseCoordinate(latitude, "latitude");
         double lon = parseCoordinate(longitude, "longitude");
 
         Point location = new Point(lon, lat);
-        logger.debug("Point created: {}", location);
+        log.debug("Point created: {}", location);
 
-        Distance distance = new Distance(MAX_DISTANCE_KM, Metrics.KILOMETERS);
-        logger.debug("Searching for stores within distance: {}", distance);
+        Distance distance = new Distance(maxDistance, Metrics.KILOMETERS);
+        log.debug("Searching for stores within distance: {}", distance);
 
         Pageable limit = PageRequest.of(0, 5);
         return storeRepository.findByLocationNear(location, distance, limit);
@@ -56,7 +61,7 @@ public class StoreServiceImpl implements StoreService {
             }
             return value;
         } catch (NumberFormatException e) {
-            logger.error("Invalid {} value: {}", type, coordinate);
+            log.error("Invalid {} value: {}", type, coordinate);
             throw new IllegalArgumentException("Invalid " + type + " value: " + coordinate, e);
         }
     }
