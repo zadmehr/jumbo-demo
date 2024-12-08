@@ -29,6 +29,6 @@ public class EmbeddedMongoConfig {
     @Bean
     public MongoTemplate mongoTemplate(MongodExecutable mongodExecutable) throws Exception {
         mongodExecutable.start();
-        return new MongoTemplate(MongoClients.create("mongodb://localhost:27019"), "testdb");
+        return new MongoTemplate(MongoClients.create("mongodb://localhost:27017"), "testdb");
     }
 }
