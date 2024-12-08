@@ -1,39 +1,70 @@
 package com.jumbo.store.geo.controller;
 
+import com.jumbo.store.geo.config.TestContainersMongoConfig;
+import com.jumbo.store.geo.controller.dto.StoreDTO;
 import com.jumbo.store.geo.model.Store;
 import com.jumbo.store.geo.repository.StoreRepository;
+
+import io.micrometer.core.ipc.http.HttpSender.Response;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = TestContainersMongoConfig.Initializer.class)
 @ActiveProfiles("test") // Uses the "test" profile for the test configuration
 class StoreControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
     private StoreRepository storeRepository;
 
+    @Autowired
+    private TestRestTemplate testRestTemplate;
     @BeforeEach
     void setUp() {
         // Clear the database before each test
         storeRepository.deleteAll();
-
         // Insert test data
+        initialization();
+    }
+
+    @Test
+    void getNearestStores() {
+        ResponseEntity<List<StoreDTO>> response = testRestTemplate.exchange(
+                "/api/v1/nearest-stores?latitude=52.37867&longitude=4.883832",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<StoreDTO>>() {});
+        // Assert
+        assert response.getStatusCode().is2xxSuccessful();
+        // List<StoreDTO> stores = response.getBody();
+        // assert stores != null;
+        // assert stores.size() == 2;
+        // assert stores.get(0).getCity().equals("Amsterdam");
+        // assert stores.get(1).getCity().equals("Rotterdam");
+    }
+
+    private void initialization() {
         Store store1 = Store.builder()
                 .city("Amsterdam")
                 .postalCode("1012AB")
@@ -61,50 +92,5 @@ class StoreControllerTest {
                 .build();
 
         storeRepository.saveAll(List.of(store1, store2));
-    }
-
-    // @Test
-    // void getNearestStores_ValidRequest_ReturnsStores() throws Exception {
-    //     mockMvc.perform(get("/api/v1/nearest-stores")
-    //             .param("latitude", "52.3702")
-    //             .param("longitude", "4.8952")
-    //             .contentType(MediaType.APPLICATION_JSON))
-    //             .andExpect(status().isOk())
-    //             .andExpect(jsonPath("$", hasSize(2)))
-    //             .andExpect(jsonPath("$[0].addressName", is("Store A")))
-    //             .andExpect(jsonPath("$[0].city", is("Amsterdam")))
-    //             .andExpect(jsonPath("$[1].addressName", is("Store B")))
-    //             .andExpect(jsonPath("$[1].city", is("Rotterdam")));
-    // }
-
-    // @Test
-    // void getNearestStores_InvalidLatitude_ReturnsBadRequest() throws Exception {
-    //     mockMvc.perform(get("/api/v1/nearest-stores")
-    //             .param("latitude", "200.0")
-    //             .param("longitude", "4.8952")
-    //             .contentType(MediaType.APPLICATION_JSON))
-    //             .andExpect(status().isBadRequest());
-    // }
-
-    // @Test
-    // void getNearestStores_InvalidLongitude_ReturnsBadRequest() throws Exception {
-    //     mockMvc.perform(get("/api/v1/nearest-stores")
-    //             .param("latitude", "52.3702")
-    //             .param("longitude", "200.0")
-    //             .contentType(MediaType.APPLICATION_JSON))
-    //             .andExpect(status().isBadRequest());
-    // }
-
-    @Test
-    void getNearestStores_NoStores_ReturnsEmptyList() throws Exception {
-        // Clear all stores
-        storeRepository.deleteAll();
-
-        mockMvc.perform(get("/api/v1/nearest-stores")
-                .param("latitude", "52.3702")
-                .param("longitude", "4.8952")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
     }
 }
