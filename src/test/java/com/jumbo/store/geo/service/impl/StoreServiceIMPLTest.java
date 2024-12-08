@@ -12,10 +12,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class StoreServiceIMPLTest {
+class StoreServiceImplTest {
 
     private final StoreRepository storeRepository = mock(StoreRepository.class);
-    private final StoreServiceIMPL storeService = new StoreServiceIMPL(storeRepository);
+    private final StoreServiceImpl storeService = new StoreServiceImpl(storeRepository);
 
     @Test
     void testGetNearestStores_ValidCoordinates() {

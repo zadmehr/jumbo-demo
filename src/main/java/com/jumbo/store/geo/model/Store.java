@@ -1,17 +1,12 @@
 package com.jumbo.store.geo.model;
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
 @Data
-@Getter
-@Setter
 @Document(collection = "stores")
 public class Store {
 
@@ -33,7 +28,7 @@ public class Store {
     private String sapStoreID;
     private String todayClose;
 
-    @Field("location")
+    @GeoSpatialIndexed(name = "location", type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;
 
     public void setLongitude(double longitude) {
@@ -50,15 +45,4 @@ public class Store {
         this.location = new GeoJsonPoint(this.longitude, this.latitude);
     }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
 }

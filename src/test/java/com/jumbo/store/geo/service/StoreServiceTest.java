@@ -22,34 +22,34 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class StoreServiceTest {
 
-    // @Autowired
-    // private MongoTemplate mongoTemplate;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-    // @BeforeEach
-    // void setUp() {
-    //     mongoTemplate.dropCollection(Store.class);
+    @BeforeEach
+    void setUp() {
+        mongoTemplate.dropCollection(Store.class);
 
-    //     // Add sample data for testing
-    //     Store store1 = new Store();
-    //     store1.setUuid("test-store-1");
-    //     store1.setCity("Amsterdam");
-    //     store1.setLongitude(4.883832);
-    //     store1.setLatitude(52.37867);
+        // Add sample data for testing
+        Store store1 = new Store();
+        store1.setUuid("test-store-1");
+        store1.setCity("Amsterdam");
+        store1.setLongitude(4.883832);
+        store1.setLatitude(52.37867);
 
-    //     Store store2 = new Store();
-    //     store2.setUuid("test-store-2");
-    //     store2.setCity("Haarlem");
-    //     store2.setLongitude(4.64622);
-    //     store2.setLatitude(52.38739);
+        Store store2 = new Store();
+        store2.setUuid("test-store-2");
+        store2.setCity("Haarlem");
+        store2.setLongitude(4.64622);
+        store2.setLatitude(52.38739);
 
-    //     mongoTemplate.save(store1);
-    //     mongoTemplate.save(store2);
+        mongoTemplate.save(store1);
+        mongoTemplate.save(store2);
 
-    //     // Create 2dsphere index
-    //     mongoTemplate.indexOps(Store.class)
-    //             .ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
+        // Create 2dsphere index
+        mongoTemplate.indexOps(Store.class)
+                .ensureIndex(new GeospatialIndex("location").typed(GeoSpatialIndexType.GEO_2DSPHERE));
 
-    // }
+    }
 
     // @Test
     // void testDatabase() {

@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Invalid number format: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // Handle other generic exceptions (optional)
+    // Handle other generic exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
         return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

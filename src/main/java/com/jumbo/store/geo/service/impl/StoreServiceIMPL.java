@@ -18,12 +18,12 @@ import java.util.List;
  * Implementation of StoreService for managing store-related operations.
  */
 @Service
-public class StoreServiceIMPL implements StoreService {
-    private static final Logger logger = LoggerFactory.getLogger(StoreServiceIMPL.class);
+public class StoreServiceImpl implements StoreService {
+    private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
     private static final double MAX_DISTANCE_KM = 100.0;
     private final StoreRepository storeRepository;
 
-    public StoreServiceIMPL(StoreRepository storeRepository) {
+    public StoreServiceImpl(StoreRepository storeRepository) {
         this.storeRepository = storeRepository;
     }
 
@@ -45,16 +45,6 @@ public class StoreServiceIMPL implements StoreService {
         return storeRepository.findByLocationNear(location, distance, limit);
     }
 
-    /**
-     * Parses a coordinate string into a double and validates its range.
-     *
-     * @param coordinate The coordinate value as a string.
-     * @param type       The type of coordinate ("latitude" or "longitude") for
-     *                   error messages.
-     * @return The parsed double value.
-     * @throws IllegalArgumentException if the coordinate is invalid or out of
-     *                                  range.
-     */
     private double parseCoordinate(String coordinate, String type) {
         try {
             double value = Double.parseDouble(coordinate);
